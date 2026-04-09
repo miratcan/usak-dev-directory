@@ -1,0 +1,145 @@
+name: Add Developer
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  add-developer:
+    if: contains(github.event.issue.labels.*.name, 'add-developer')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse issue and update developers.json
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body;
+
+            // Parse issue form fields
+            function parseField(body, label) {
+              const regex = new RegExp(`### ${label}\\s*\\n\\s*([^\\n]+)`, 'i');
+              const match = body.match(regex);
+              if (!match) return null;
+              const value = match[1].trim();
+              if (value === '_No response_' || value === 'None' || value === '') return null;
+              return value;
+            }
+
+            const name = parseField(body, 'Ad Soyad');
+            const githubUsername = parseField(body, 'GitHub Kullanıcı Adı');
+            const title = parseField(body, 'Ünvan');
+            const website = parseField(body, 'Website');
+            const twitter = parseField(body, 'Twitter / X');
+            const linkedin = parseField(body, 'LinkedIn');
+
+            // Validate required fields
+            if (!name || !githubUsername) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: '❌ **Ad Soyad** ve **GitHub Kullanıcı Adı** zorunlu alanlardır. Lütfen yeni bir issue aç ve bu alanları doldur.'
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
+              return;
+            }
+
+            // Read current developers.json
+            const fs = require('fs');
+            const developers = JSON.parse(fs.readFileSync('developers.json', 'utf8'));
+
+            // Check for duplicates
+            const duplicate = developers.find(d =>
+              d.github.toLowerCase() === githubUsername.toLowerCase()
+            );
+
+            if (duplicate) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `⚠️ **@${githubUsername}** zaten listede! Bilgilerini güncellemek istiyorsan yeni bir issue aç ve belirt.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
+              return;
+            }
+
+            // Build developer entry
+            const newDev = { name, github: githubUsername };
+
+            if (title) newDev.title = title;
+
+            const links = {};
+            if (website) links.website = website;
+            if (twitter) links.twitter = twitter;
+            if (linkedin) links.linkedin = linkedin;
+            if (Object.keys(links).length > 0) newDev.links = links;
+
+            // Add and sort alphabetically by name (surname)
+            developers.push(newDev);
+            developers.sort((a, b) => {
+              const surnameA = a.name.split(' ').pop().toLocaleLowerCase('tr');
+              const surnameB = b.name.split(' ').pop().toLocaleLowerCase('tr');
+              return surnameA.localeCompare(surnameB, 'tr');
+            });
+
+            // Write back
+            fs.writeFileSync(
+              'developers.json',
+              JSON.stringify(developers, null, 2) + '\n'
+            );
+
+            // Set output for commit step
+            core.exportVariable('DEV_NAME', name);
+            core.exportVariable('DEV_GITHUB', githubUsername);
+            core.exportVariable('ISSUE_NUMBER', issue.number);
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add developers.json
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Add ${DEV_NAME} (@${DEV_GITHUB})
+
+          Closes #${ISSUE_NUMBER}"
+          git push
+
+      - name: Comment and close issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `🎉 Hoş geldin **@${process.env.DEV_GITHUB}**! Listeye eklendi.\n\nUşak Developer Directory: https://github.com/${context.repo.owner}/${context.repo.repo}`
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              state: 'closed',
+              state_reason: 'completed'
+            });

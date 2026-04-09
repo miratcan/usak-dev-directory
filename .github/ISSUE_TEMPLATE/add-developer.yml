@@ -1,0 +1,57 @@
+name: "🙋 Beni ekle!"
+description: "Uşak Developer Directory'ye kendini ekle"
+title: "Beni ekle: "
+labels: ["add-developer"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Aşağıdaki formu doldur, gerisini biz hallederiz! 🚀
+
+  - type: input
+    id: name
+    attributes:
+      label: Ad Soyad
+      placeholder: "Mirat Can Bayrak"
+    validations:
+      required: true
+
+  - type: input
+    id: github
+    attributes:
+      label: GitHub Kullanıcı Adı
+      placeholder: "miratcan"
+    validations:
+      required: true
+
+  - type: input
+    id: title
+    attributes:
+      label: Ünvan
+      placeholder: "Backend Developer"
+    validations:
+      required: false
+
+  - type: input
+    id: website
+    attributes:
+      label: Website
+      placeholder: "https://example.com"
+    validations:
+      required: false
+
+  - type: input
+    id: twitter
+    attributes:
+      label: Twitter / X
+      placeholder: "https://twitter.com/kullanici"
+    validations:
+      required: false
+
+  - type: input
+    id: linkedin
+    attributes:
+      label: LinkedIn
+      placeholder: "https://linkedin.com/in/kullanici"
+    validations:
+      required: false
