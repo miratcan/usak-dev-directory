@@ -12,6 +12,9 @@ jobs:
   add-developer:
     if: contains(github.event.issue.labels.*.name, 'add-developer')
     runs-on: ubuntu-latest
+    concurrency:
+      group: add-developer
+      cancel-in-progress: false
 
     steps:
       - uses: actions/checkout@v4
