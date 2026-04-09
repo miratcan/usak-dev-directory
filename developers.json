@@ -16,5 +16,15 @@
     "name": "Hüseyin KOCABIÇAK",
     "github": "kocabicakhuseyin",
     "title": "Bilişim Teknolojileri ve Yazılım Öğretmrni"
+  },
+  {
+    "name": "test",
+    "github": "test",
+    "title": "test",
+    "links": {
+      "website": "test",
+      "twitter": "test",
+      "linkedin": "test"
+    }
   }
 ]
