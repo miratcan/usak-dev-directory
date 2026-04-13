@@ -10,7 +10,7 @@ Uşak'taki yazılımcıların listesi.
 
 Bot otomatik olarak seni listeye ekler ve issue'yu kapatır.
 
-## Developers (6)
+## Developers (7)
 
 | # | Ad | GitHub | Ünvan | Linkler |
 |---|-----|--------|-------|---------|
@@ -19,4 +19,5 @@ Bot otomatik olarak seni listeye ekler ve issue'yu kapatır.
 | 3 | Sinan Güngör | [@sgngr](https://github.com/sgngr) | Developer |  |
 | 4 | ibrahim ışıklı | [@ibrahimisikli](https://github.com/ibrahimisikli) | Embedded Software Developer | [Website](https://www.ibrahimisikli.com/) · [LinkedIn](www.linkedin.com/in/ibrahim-işıklı-932542235) |
 | 5 | Hüseyin KOCABIÇAK | [@kocabicakhuseyin](https://github.com/kocabicakhuseyin) | Bilişim Teknolojileri ve Yazılım Öğretmrni |  |
-| 6 | Yakut Özcan | [@yakutozcan](https://github.com/yakutozcan) | Team Lead | [X](https://www.x.com/yakutozcan) · [LinkedIn](https://www.linkedin.com/in/yakutozcan/) |
+| 6 | Rahmi Kostik | [@rhmkstk](https://github.com/rhmkstk) |  | [LinkedIn](https://www.linkedin.com/in/rahmi-kostik-108450169) |
+| 7 | Yakut Özcan | [@yakutozcan](https://github.com/yakutozcan) | Team Lead | [X](https://www.x.com/yakutozcan) · [LinkedIn](https://www.linkedin.com/in/yakutozcan/) |
